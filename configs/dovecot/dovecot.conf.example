@@ -1,0 +1,23 @@
+# ==================================================
+# Dovecot Authentication Backend
+# Used only for SMTP AUTH
+# ==================================================
+
+passdb {
+    driver = pam
+}
+
+userdb {
+    driver = passwd
+}
+
+service auth {
+
+    unix_listener /var/spool/postfix/private/auth {
+
+        mode = 0660
+        user = postfix
+        group = postfix
+
+    }
+}

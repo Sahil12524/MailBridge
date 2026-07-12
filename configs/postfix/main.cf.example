@@ -1,0 +1,67 @@
+# ==================================================
+# Postfix Main Configuration
+# Sanitized Example
+# ==================================================
+
+myhostname = mail.example.com
+myorigin = /etc/mailname
+
+inet_interfaces = all
+inet_protocols = all
+
+mydestination =
+    $myhostname,
+    localhost.localdomain,
+    localhost
+
+mynetworks =
+    127.0.0.0/8,
+    [::1]/128
+
+relayhost = [smtp.email.<region>.oraclecloud.com]:587
+
+# ==================================================
+# SMTP Relay Authentication
+# ==================================================
+
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+
+# ==================================================
+# TLS
+# ==================================================
+
+smtp_use_tls = yes
+smtp_tls_security_level = encrypt
+smtp_tls_CApath = /etc/ssl/certs
+
+smtpd_tls_cert_file = /etc/postfix/tls/mail.example.com.crt
+smtpd_tls_key_file  = /etc/postfix/tls/mail.example.com.key
+
+smtpd_tls_security_level = may
+
+# ==================================================
+# SMTP AUTH via Dovecot
+# ==================================================
+
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+
+# ==================================================
+# Relay Protection
+# ==================================================
+
+smtpd_relay_restrictions =
+    permit_mynetworks,
+    permit_sasl_authenticated,
+    defer_unauth_destination
+
+smtpd_recipient_restrictions =
+    permit_sasl_authenticated,
+    reject_unauth_destination
+
+smtpd_sender_restrictions =
+    reject_non_fqdn_sender,
+    reject_unknown_sender_domain
