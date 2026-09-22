@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync Caddy TLS certificate to Postfix
+After=caddy.service postfix.service
+Wants=caddy.service postfix.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/sync-postfix-caddy-cert.sh
