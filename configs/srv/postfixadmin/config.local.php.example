@@ -1,0 +1,15 @@
+<?php
+$CONF['configured'] = true;
+$CONF['database_type'] = 'mysqli';
+$CONF['database_host'] = 'localhost';
+$CONF['database_user'] = 'mailserver';
+$CONF['database_name'] = 'mailserver';
+$CONF['database_socket'] = '/run/mysqld/mysqld.sock';
+$CONF['domain_path'] = 'YES';
+$CONF['domain_in_mailbox'] = 'NO';
+$CONF['theme'] = 'bootstrap';
+$CONF['smtp_active_flag'] = 'YES';
+$CONF['site_url'] = 'https://admin.example.net/';
+$CONF['admin_email'] = 'postmaster@example.net';
+$CONF['password_expiration'] = 'NO';
+$CONF['setup_password'] = 'REPLACE_WITH_PRIVATE_HASH';
