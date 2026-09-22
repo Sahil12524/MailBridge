@@ -1,0 +1,31 @@
+#!/bin/bash
+set -euo pipefail
+
+DOMAIN="mail.example.net"
+CADDY_CERT="/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${DOMAIN}/${DOMAIN}.crt"
+CADDY_KEY="/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${DOMAIN}/${DOMAIN}.key"
+POSTFIX_CERT="/etc/postfix/tls/${DOMAIN}.crt"
+POSTFIX_KEY="/etc/postfix/tls/${DOMAIN}.key"
+
+TMP_CERT="$(mktemp)"
+TMP_KEY="$(mktemp)"
+trap 'rm -f "$TMP_CERT" "$TMP_KEY"' EXIT
+
+if [[ ! -f "$CADDY_CERT" || ! -f "$CADDY_KEY" ]]; then
+    echo "Caddy certificate or key not found."
+    exit 1
+fi
+
+cp "$CADDY_CERT" "$TMP_CERT"
+cp "$CADDY_KEY" "$TMP_KEY"
+
+if cmp -s "$TMP_CERT" "$POSTFIX_CERT" && cmp -s "$TMP_KEY" "$POSTFIX_KEY"; then
+    echo "Postfix certificate is already up to date."
+    exit 0
+fi
+
+install -o root -g root -m 600 "$TMP_CERT" "$POSTFIX_CERT"
+install -o root -g root -m 600 "$TMP_KEY" "$POSTFIX_KEY"
+postfix check
+systemctl reload postfix
+echo "Postfix certificate updated and Postfix reloaded successfully."
