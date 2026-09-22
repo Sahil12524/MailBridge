@@ -1,0 +1,9 @@
+admin.example.net {
+    root * /srv/postfixadmin/public
+    php_fastcgi unix//run/php/php8.3-fpm.sock
+    file_server
+}
+
+mail.example.net {
+    respond "Mail server endpoint" 404
+}
